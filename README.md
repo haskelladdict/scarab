@@ -1,4 +1,4 @@
 scarab
 ======
 
-scarab is a simplified re-implementation of mcell in rust.
+scarab is a simple reference implementation of mcell in rust.
