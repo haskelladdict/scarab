@@ -5,7 +5,8 @@ use mesh;
 use vector;
 use util;
 
-const GEOM_EPSILON : f64 = 1e-12;
+pub const geom_epsilon : f64 = 1e-12;
+pub const geom_epsilon_2 : f64 = 1e-24;
 
 /// intersect tests for ray MeshElem intersections. This function returns the
 /// hit point and intersection status which can be one of:
@@ -31,7 +32,7 @@ pub fn intersect(start: &vector::Vec3, disp: &vector::Vec3, m: &mesh::MeshElem)
   let w0 = start - &m.a;
   let a = -m.n.dot(&w0);
   let b = m.n.dot(&disp);
-  if b.abs() < GEOM_EPSILON {  // our ray is parallel to triangle plane
+  if b.abs() < geom_epsilon {  // our ray is parallel to triangle plane
     if util::same(a, 0.0) {    // our ray is coplanar with the triangle
       return (3, vector::Vec3::new(0.0, 0.0, 0.0));
     } else {
@@ -50,8 +51,8 @@ pub fn intersect(start: &vector::Vec3, disp: &vector::Vec3, m: &mesh::MeshElem)
 
   // now test that hitPoint is within the triangle
   // we use local variable for efficiency
-  let hitPoint = start + &disp.scalar(r);
-  let w = &hitPoint - &m.a;
+  let hit_point = start + &disp.scalar(r);
+  let w = &hit_point - &m.a;
   let uu = m.u.dot(&m.u);
   let uv = m.u.dot(&m.v);
   let vv = m.v.dot(&m.v);
@@ -63,15 +64,15 @@ pub fn intersect(start: &vector::Vec3, disp: &vector::Vec3, m: &mesh::MeshElem)
   let s = (uv * wv - vv * wu) / D;
   // hitPoint is outside m
   if s < 0.0 || s > 1.0 {
-    return (2, hitPoint);
+    return (2, hit_point);
   }
 
   let t = (uv * wu - uu * wv) / D;
   // hitPoint is outside m
   if t < 0.0 || (s + t) > 1.0 {
-    return (2, hitPoint);
+    return (2, hit_point);
   }
 
   // hitPoint is in m
-  (0, hitPoint)
+  (0, hit_point)
  }

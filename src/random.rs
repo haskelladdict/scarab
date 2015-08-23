@@ -157,7 +157,7 @@ impl rng {
   pub fn norm(&mut self) -> f64 {
 
     let mut sign = 1.0;
-    let mut x = 0.0;
+    let mut x;
 
     loop {
 
@@ -175,16 +175,16 @@ impl rng {
       // Compute our X, and check if the X value lies entirely under the
       // curve for the chosen region
       x = (pos_within_region as f64) * WTAB[region as usize];
-      if (pos_within_region < KTAB[region as usize]) {
+      if pos_within_region < KTAB[region as usize] {
         break;
       }
 
       // If we're in one of the 127 cheap regions */
-      let mut y = 0.0;
+      let mut y;
       if region != 0 {
-        let yB = YTAB[region as usize];
-        let yR = YTAB[(region as usize) - 1] - yB;
-        y = yB + yR * self.rng.gen::<f64>()
+        let y_b = YTAB[region as usize];
+        let y_r = YTAB[(region as usize) - 1] - y_b;
+        y = y_b + y_r * self.rng.gen::<f64>()
       // If we're in the expensive region
       } else {
         let log_rnd = (-self.rng.gen::<f64>()).ln_1p();
@@ -199,6 +199,3 @@ impl rng {
     sign * x
   }
 }
-
-
-//

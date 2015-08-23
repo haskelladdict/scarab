@@ -14,6 +14,7 @@ pub struct MeshElem {
   pub u: vector::Vec3,  // triangle vectors
   pub v: vector::Vec3,
   pub n: vector::Vec3,  // normal vector
+  pub nn: vector::Vec3, // normalized normal vector
 }
 
 /// methods for MeshElem
@@ -24,7 +25,8 @@ impl MeshElem {
     let u_ = &v2 - &v1;
     let v_ = &v3 - &v1;
     let n_  = u_.cross(&v_);
-    MeshElem{a: v1, b: v2, c: v3, u: u_, v: v_, n: n_ }
+    let nn_ = n_.scalar(1.0/n_.norm());
+    MeshElem{a: v1, b: v2, c: v3, u: u_, v: v_, n: n_, nn: nn_}
   }
 }
 
@@ -33,19 +35,19 @@ pub type Mesh = Vec<MeshElem>;
 
 /// make_rect is a helper function for creating a rectangular mesh bounded by
 /// a Vec3 to the lower left corner and upper right corner
-pub fn make_rect(llc: &vector::Vec3, urc: &vector::Vec3) -> Mesh {
+pub fn make_rect(llc: vector::Vec3, urc: vector::Vec3) -> Mesh {
   assert!(llc.x < urc.x && llc.y < urc.y && llc.z < urc.z);
 
   // compute 8 corners
-  let diag = urc - llc;
-  let c0 = *llc;
-  let c1 = llc + &vector::Vec3::new(diag.x, 0.0, 0.0);
-  let c2 = llc + &vector::Vec3::new(0.0, diag.y, 0.0);
-  let c3 = llc + &vector::Vec3::new(0.0, 0.0, diag.z);
-  let c4 = llc + &vector::Vec3::new(diag.x, diag.y, 0.0);
-  let c5 = llc + &vector::Vec3::new(diag.x, 0.0, diag.z);
-  let c6 = llc + &vector::Vec3::new(0.0, diag.y, diag.z);
-  let c7 = *urc;
+  let diag = &urc - &llc;
+  let c0 = llc;
+  let c1 = &llc + &vector::Vec3::new(diag.x, 0.0, 0.0);
+  let c2 = &llc + &vector::Vec3::new(0.0, diag.y, 0.0);
+  let c3 = &llc + &vector::Vec3::new(0.0, 0.0, diag.z);
+  let c4 = &llc + &vector::Vec3::new(diag.x, diag.y, 0.0);
+  let c5 = &llc + &vector::Vec3::new(diag.x, 0.0, diag.z);
+  let c6 = &llc + &vector::Vec3::new(0.0, diag.y, diag.z);
+  let c7 = urc;
 
   vec![
     MeshElem::new(c0, c1, c5),

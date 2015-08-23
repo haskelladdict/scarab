@@ -58,4 +58,9 @@ impl Vec3 {
   pub fn norm(&self) -> f64 {
     ((self).dot(self)).sqrt()
   }
+
+  // norm2 is the squared L2 norm of Vec3
+  pub fn norm2(&self) -> f64 {
+    self.dot(self)
+  }
 }
