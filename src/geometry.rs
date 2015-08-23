@@ -75,5 +75,3 @@ pub fn intersect(start: &vector::Vec3, disp: &vector::Vec3, m: &mesh::MeshElem)
   // hitPoint is in m
   (0, hitPoint)
  }
-
-//
